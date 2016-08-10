@@ -1,0 +1,7 @@
+base
+readr
+dplyr
+knitr
+ggplot2
+tidyr
+purrr

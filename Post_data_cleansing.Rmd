@@ -2,7 +2,7 @@
 title: "Checklist_for_Data_Cleansing"
 author: "Sebastian Sauer"
 date: "9 August 2016"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -16,21 +16,27 @@ Data analysis, in practice, consists typically of some different steps which can
 
 ![](data_science_process.png)
 
-Often, the first major part -- "prepare" -- is the most time consuming. This can be lamented since many anylists prefare the cool modeling aspects (since I want to show my math!). In practice, one rather has to get his (her) hands dirt...
+(Inspired by [this](http://r4ds.had.co.nz/introduction-1.html))
 
-In this post, I want to put together some kind of checklist of frequent steps in data preparation. More precisely, I would like to detail some typical steps in "cleansing" your data.Such steps include: 
+Often, the first major part -- "prepare" -- is the most time consuming. This can be lamented since many analysts prefer the cool modeling aspects (since I want to show my math!). In practice, one rather has to get his (her) hands dirt...
 
-- identify missings 
-- identify outliers 
-- check for overall plausibility and errors (e.g, typos)
-- identify highly correlated variables
-- identify variables with (nearly) no variance
-- identify variables with strange names or values
-- check variable classes (eg. characters vs factors)
-- remove/transform some variables (maybe your model does not like categorial variables)
-- rename some variables or values (especially interesting if large number)
-- check some overall pattern (statistical/ numerical summaries)
-- center/scale variables
+In this post, I want to put together some kind of checklist of frequent steps in data preparation. More precisely, I would like to detail some typical steps in "cleansing" your data. Such steps include: 
+
+___
+
+- [x] identify missings 
+- [x] identify outliers 
+- [x] check for overall plausibility and errors (e.g, typos)
+- [x] identify highly correlated variables
+- [x] identify variables with (nearly) no variance
+- [x] identify variables with strange names or values
+- [x] check variable classes (eg. characters vs factors)
+- [x] remove/transform some variables (maybe your model does not like categorial variables)
+- [x] rename some variables or values (especially interesting if large number)
+- [x] check some overall pattern (statistical/ numerical summaries)
+- [x] center/scale variables
+
+___
 
 
 # Don't get lost in big projects
@@ -50,6 +56,8 @@ cleansed_data <- cleanse_data(raw_dirty_data,
 
 Although functions are a bit more difficult to debug, at the end of the day it is much easier. Normally or often the steps will be run many times (for different reasons), so it is much easier if all is under one roof.
 
+That said, [pragmtic programming](http://blog.sukria.net/2012/01/06/the-10-rules-of-the-pragmatic-programmer/) suggests to start easy, and to refactor frequently. So better start with a simple solution that works than to have a enormous code that chokes. Get the code running, then improve on it.
+
 # Data set for practice
 
 The **OKCupid** Data set (sanitized version, no names!) is quite nice. You can download it [here](https://github.com/rudeboybert/JSE_OkCupid).
@@ -67,7 +75,7 @@ data <- read_csv(paste(path, file, sep = ""))
 
 ```
 
-So, the dataset ist quite huge: `r dim(data)` (rows/cols)
+So, the data set is quite huge: `r dim(data)` (rows/cols)
 
 Let's have a brief look at the data.
 
@@ -80,7 +88,7 @@ glimpse(data)
 ## What's in a name?
 With the code getting longer, it is easy to get confused about naming: `data_v2_no_missings_collapsed` is the right data matrix to proceed, wasn't it? Or rather `data_dat_edit_noNA_v3`? Probably a helpful (though partial) solution is to prevent typing a lot. "Don't repeat yourself" - if stuff is put inside a function, the objects will not clutter your environment, and you don't have to deal with them all the time. Also, you will reduce code, and the number of objects if stuff is put inside functions and loops.
 
-That raises the question who to name the data set? At least two points are worth thinking. First, the "root" name should it be the name of the project such as "OKCupid" or "nycflights13"? Or just something like "data"? Personally, I prefer "data" as it is short and everybody will know what's going on. Second question: Should some data manipulations should be visisble in the name of the object? I, personally, like this and do that fruquently, eg., `carat_mean`, so I will remember that the mean is in there. However, for bigger projects I have made the experience that I lose track on which is the most recent version. So better do *not* put data manipulations in the name of the data frame. However, what one can do is use attributes, eg.:
+That raises the question who to name the data set? At least two points are worth thinking. First, the "root" name should it be the name of the project such as "OKCupid" or "nycflights13"? Or just something like "data"? Personally, I prefer "data" as it is short and everybody will know what's going on. Second question: Should some data manipulations should be visible in the name of the object? I, personally, like this and do that frequently, eg., `carat_mean`, so I will remember that the mean is in there. However, for bigger projects I have made the experience that I lose track on which is the most recent version. So better do *not* put data manipulations in the name of the data frame. However, what one can do is use attributes, eg.:
 
 ```{r eval = FALSE}
 
@@ -95,16 +103,21 @@ attr(data, "NA_status") <- "no_NA"
 
 # Checklist
 
-Clearly, there are different ways to get to Rome; I present just one, which has proved hepful for me.
+Clearly, there are different ways to get to Rome; I present just one, which has proved helpful for me.
 
 ## Identify missings
-A key point is here to address many columns in one go, otherwise it gets laborous with large data sets. Here's one way:
+A key point is here to address many columns in one go, otherwise it gets laborious with large data sets. Here's one way:
 
 ```{r identify_missings}
+
+library(knitr)
 
 data %>% 
   summarise_all(funs(sum(is.na(.)))) %>% kable
 ```
+
+The function `kable` prints a html table (package `knitr`).
+
 
 There seem to be quite a bit missings. Maybe better plot it.
 
@@ -138,7 +151,7 @@ data %>%
 
 ```
 
-Ok, that are `length(cols_with_too_many_NA)` columns. We would not want to exclude them because they are too many.
+OK, that are `length(cols_with_too_many_NA)` columns. We would not want to exclude them because they are too many.
 
 
 
@@ -164,7 +177,7 @@ Especially `income` may be problematic.
 
 Find out more on `gather` eg., [here](https://sebastiansauerblog.wordpress.com/2016/07/13/long-vs-wide-format-and-gather/).
 
-Boxplots (or violinplots/beanplots) may also be a way:
+Box plots (or violin plots/bean plots) may also be a way:
 
 
 ```{r}
@@ -197,7 +210,7 @@ data %>%
 ```
 
 
-Puh, that takes ages to plot. Maybe better don't plot, since we are not after exploration, but just want to know if something is going wrong.
+Pooh, that takes ages to plot. Maybe better don't plot, since we are not after exploration, but just want to know if something is going wrong.
 
 
 Maybe it is better if we do the following:
@@ -206,11 +219,8 @@ Maybe it is better if we do the following:
 
 This gives an indication whether some categories are quite frequent in relation to others.
 
-The function `kable` prints a html table (package `knitr`).
 
 ```{r}
-
-library(knitr)
 
 
 data %>% 
@@ -224,7 +234,7 @@ data %>%
 
 ## Plausibility check
 
-Plausibility check can includes checking orders of magnitude, looking for unplausible values (negative body weight), among others. A good starter is to differentiate between numeric and non-numeric variables.
+Plausibility check can includes checking orders of magnitude, looking for implausible values (negative body weight), among others. A good starter is to differentiate between numeric and non-numeric variables.
 
 
 ### Numeric
@@ -237,7 +247,7 @@ data %>%
 
 The function `map` comes from package `purrr`; it maps each selected column to the function `summary`.
 
-For instance, the max. age of 110 appears somewhat high... And the min. height of 1 should rather be excluded before furhter operations start. For `income` similar reasoning applies.
+For instance, the max. age of 110 appears somewhat high... And the min. height of 1 should rather be excluded before further operations start. For `income` similar reasoning applies.
 
 ### Non-numeric
 
@@ -292,7 +302,7 @@ names(dummy) <- names_data_new
 
 ## Recode values
 
-A quite frequent use case is to get "strange" value or variables names in order, e.g., "variable 2" oder "I rather not say" (including blanks or some other non-normal stuff).
+A quite frequent use case is to get "strange" value or variables names in order, e.g., "variable 2" or "I rather not say" (including blanks or some other non-normal stuff).
 
 One approach is to use `dplyr::recode`.
 ```{r}
@@ -329,7 +339,7 @@ data %>%
 
 `base::scale` performs a z-transformation of the matrix (like object) given as input.
 
-But wait; one issue is that the dataframe now consists of the numeric variables only. We have to manually knit it together with the rest of the party. Not so convenient. Rather, try this:
+But wait; one issue is that the data frame now consists of the numeric variables only. We have to manually knit it together with the rest of the party. Not so convenient. Rather, try this:
 
 ```{r}
 data %>% 
