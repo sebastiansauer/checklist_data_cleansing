@@ -302,7 +302,7 @@ data %>%
 
 ![](Post_data_cleansing_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
-Pooh, that takes ages to plot. Maybe better don't plot, since we are not after exploration, but just want to know if something is going wrong.
+Pooh, that takes ages to plot. And does not look too pretty. Maybe better don't plot, since we are not after exploration, but just want to know if something is going wrong.
 
 Maybe it is better if we do the following: &gt; for each non-numeric variable do &gt; divide most frequent category by least frequent category
 

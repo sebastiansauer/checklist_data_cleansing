@@ -2,7 +2,7 @@
 title: "Checklist_for_Data_Cleansing"
 author: "Sebastian Sauer"
 date: "9 August 2016"
-output: github_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -210,7 +210,7 @@ data %>%
 ```
 
 
-Pooh, that takes ages to plot. Maybe better don't plot, since we are not after exploration, but just want to know if something is going wrong.
+Pooh, that takes ages to plot. And does not look too pretty. Maybe better don't plot, since we are not after exploration, but just want to know if something is going wrong.
 
 
 Maybe it is better if we do the following:
